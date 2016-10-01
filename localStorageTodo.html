@@ -4,8 +4,13 @@
         <meta charset="utf-8">
         <title>Todo List</title>
         <style>
+            .todo-cell span {
+                min-width: 30px;
+                display: inline-block;
+                text-decoration: inherit;
+            }
             .done {
-                color: gray;
+                color: lightgray;
                 text-decoration: line-through;
             }
         </style>
@@ -156,12 +161,13 @@ var toggleClass = function(element, className) {
 
 var currentTime = function() {
     var d = new Date()
-    var month = d.getMonth() + 1
-    var date = d.getDate()
-    var hours = d.getHours()
-    var minutes = d.getMinutes()
-    var seconds = d.getSeconds()
-    var timeString = `${month}/${date} ${hours}:${minutes}:${seconds}`
+    var timeString = d.toString()
+    // var month = d.getMonth() + 1
+    // var date = d.getDate()
+    // var hours = d.getHours()
+    // var minutes = d.getMinutes()
+    // var seconds = d.getSeconds()
+    // var timeString = `${month}/${date} ${hours}:${minutes}:${seconds}`
     return timeString
 }
 // 时间标准库
