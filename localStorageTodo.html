@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>上课用品 8</title>
+        <style>
+            .done {
+                color: gray;
+                text-decoration: line-through;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="todo-main">
+            <div class="todo-form">
+                <input id='id-input-todo' type="text">
+                <button id='id-button-add' type="button">Add</button>
+            </div>
+
+            <div id="id-div-container">
+                <!-- <div class='todo-cell'>
+                    <button class='todo-done'>完成</button>
+                    <button class='todo-delete'>删除</button>
+                    <span contenteditable='true'>上课</span>
+                </div> -->
+            </div>
+        </div>
+<script>
+
+// 自己定义一个 log 函数
+var log = function() {
+    console.log.apply(console, arguments)
+}
+
+var todoList = []
+
+// 给 add button 绑定添加 todo 事件
+var addButton = document.querySelector('#id-button-add')
+addButton.addEventListener('click', function(){
+    // 获得 input.value
+    var todoInput = document.querySelector('#id-input-todo')
+    var task = todoInput.value
+    // 生成 todo 对象
+    var todo = {
+        'task': task,
+        'time': currentTime(),
+        'done': false
+    }
+    todoList.push(todo)
+    saveTodos()
+    insertTodo(todo)
+})
+
+var insertTodo = function(todo) {
+    // 添加到 container 中
+    var todoContainer = document.querySelector('#id-div-container')
+    var t = templateTodo(todo)
+    // 这个方法用来添加元素更加方便, 不需要 createElement
+    todoContainer.insertAdjacentHTML('beforeend', t);
+}
+
+var templateTodo = function(todo) {
+    var doneClass = ''
+    if(todo.done === true) {
+        doneClass = 'done'
+    }
+    var t = `
+        <div class='todo-cell ${doneClass}'>
+            <button class='todo-done'>完成</button>
+            <button class='todo-delete'>删除</button>
+            <span contenteditable='true'>${todo.task}</span>
+            <span>${todo.time}</span>
+        </div>
+    `
+    return t
+}
+
+var todoContainer = document.querySelector('#id-div-container')
+
+todoContainer.addEventListener('keydown', function(event){
+    log('container keydown', event, event.target)
+    var target = event.target
+    if(event.key === 'Enter') {
+        log('按了回车')
+        // 失去焦点
+        target.blur()
+        // 阻止默认行为的发生, 也就是不插入回车
+        event.preventDefault()
+        // 更新 todo
+        var todoDiv = target.parentElement
+        var index = indexOfElement(todoDiv)
+        log('update index',  index)
+        // 把元素在 todoList 中更新
+        todoList[index].task = target.innerHTML
+        // todoList.splice(index, 1)
+        saveTodos()
+
+    }
+})
+
+// 通过 event.target 的 class 来检查点击的是什么
+todoContainer.addEventListener('click', function(event){
+    log('container click', event, event.target)
+    var target = event.target
+    if(target.classList.contains('todo-done')) {
+        log('done')
+        // 给 todo div 开关一个状态 class
+        var todoDiv = target.parentElement
+        var index = indexOfElement(todoDiv)
+        todoList[index].done = !todoList[index].done
+        saveTodos()
+        toggleClass(todoDiv, 'done')
+    } else if (target.classList.contains('todo-delete')) {
+        log('delete')
+        var todoDiv = target.parentElement
+        var index = indexOfElement(todoDiv)
+        log('delete index',  index)
+        todoDiv.remove()
+        // 把元素从 todoList 中 remove 掉
+        // delete todoList[index]
+        todoList.splice(index, 1)
+        saveTodos()
+    }
+})
+
+// 保存 todoList
+var saveTodos = function() {
+    var s = JSON.stringify(todoList)
+    localStorage.todoList = s
+}
+
+var loadTodos = function() {
+    var s = localStorage.todoList
+    return JSON.parse(s)
+}
+
+// 返回自己在父元素中的下标
+var indexOfElement = function(element) {
+    var parent = element.parentElement
+    for (var i = 0; i < parent.children.length; i++) {
+        var e = parent.children[i]
+        if (e === element) {
+            return i
+        }
+    }
+}
+
+// 这个函数用来开关一个元素的某个 class
+var toggleClass = function(element, className) {
+    if (element.classList.contains(className)) {
+        element.classList.remove(className)
+    } else {
+        element.classList.add(className)
+    }
+}
+
+var currentTime = function() {
+    var d = new Date()
+    var month = d.getMonth() + 1
+    var date = d.getDate()
+    var hours = d.getHours()
+    var minutes = d.getMinutes()
+    var seconds = d.getSeconds()
+    var timeString = `${month}/${date} ${hours}:${minutes}:${seconds}`
+    return timeString
+}
+// 时间标准库
+// ===
+// 常用用法如下
+/*
+var d = new Date()
+d.getFullYear()
+年份, 2016
+d.getMonth()
+月份, 0-11
+d.getDate()
+日期, 1-31
+d.getHours()
+小时, 0-23
+d.getMinutes()
+分钟, 0-59
+d.getSeconds()
+秒数, 0-59
+d.getMilliseconds()
+毫秒, 0-999
+d.getDay()
+星期几, 0-6
+*/
+
+// 程序加载后, 加载 todoList 并且添加到页面中
+todoList = loadTodos()
+for (var i = 0; i < todoList.length; i++) {
+    var todo = todoList[i]
+    insertTodo(todo)
+}
+</script>
+    </body>
+</html>
