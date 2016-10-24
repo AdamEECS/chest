@@ -1,4 +1,4 @@
-MAP = ('零', '一', '二', '三', '四', '五', '六', '七', '八', '九')
+BASE = '零一二三四五六七八九'
 CARRY = ('', '十', '百', '千')
 S4 = 10 ** 4
 S8 = 10 ** 8
@@ -9,23 +9,25 @@ MAX = 10 ** 16 - 1
 
 def to_cn4(num):
     if num < 10:
-        return MAP[num]
+        return BASE[num]
     else:
         lst = []
         while num >= 10:
             lst.append(num % 10)
-            num /= 10
+            num //= 10
         lst.append(num)
         c = len(lst)
         result = ''
 
         for i, v in enumerate(lst):
             if v != 0:
-                result += CARRY[i] + MAP[int(v)]
+                result += CARRY[i] + BASE[int(v)]
                 if i < c - 1 and lst[i + 1] == 0:
                     result += '零'
-
-        return result[::-1].replace('一十', '十')
+        result = result[::-1]
+        if c == 2:
+            result = result.replace('一十', '十')
+        return result
 
 
 def to_cn8(num):
@@ -70,4 +72,5 @@ def to_cn(num):
 
 
 if __name__ == '__main__':
-    print(to_cn(123456789999))
+    for a in range(1200):
+        print(to_cn(a))
