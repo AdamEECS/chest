@@ -3,8 +3,8 @@ CARRY = ('', '十', '百', '千')
 S4 = 10 ** 4
 S8 = 10 ** 8
 S16 = 10 ** 16
-MIN = 0
 MAX = 10 ** 16 - 1
+MIN = -(10 ** 16 - 1)
 
 
 def to_cn4(num):
@@ -57,12 +57,7 @@ def to_cn16(num):
             return to_cn8(high) + '亿' + to_cn8(low)
 
 
-def to_cn(num):
-    if type(num) != int:
-        return '{} is not a integer.'.format(num)
-    if num < MIN or num > MAX:
-        return '{} out of range[{}, {})'.format(num, MIN, MAX)
-
+def unsigned_to_cn(num):
     if num < S4:
         return to_cn4(num)
     elif num < S8:
@@ -71,6 +66,19 @@ def to_cn(num):
         return to_cn16(num)
 
 
+def to_cn(num):
+    if type(num) != int:
+        return '{} is not a integer.'.format(num)
+    if num < MIN or num > MAX:
+        return '{} out of range[{}, {}]'.format(num, MIN, MAX)
+    sign_cn = ''
+    if num < 0:
+        num = -num
+        sign_cn = '负'
+    return sign_cn + unsigned_to_cn(num)
+
+
 if __name__ == '__main__':
     for a in range(1200):
         print(to_cn(a))
+    # print(to_cn(-123456789))
