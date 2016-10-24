@@ -79,6 +79,5 @@ def to_cn(num):
 
 
 if __name__ == '__main__':
-    for a in range(1200):
+    for a in range(-2001, 2005, 9):
         print(to_cn(a))
-    # print(to_cn(-123456789))
