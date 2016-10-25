@@ -91,7 +91,6 @@ def cn2num(cn):
 
 
 if __name__ == '__main__':
-    # print(cn2num('一兆一千一百一十一亿一千一百二十三万四千五百六十七'))
     test_dig = ['九',
                 '十一',
                 '一百二十三',
