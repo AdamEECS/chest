@@ -1,4 +1,4 @@
-CN_NUM = {
+BASE = {
     '〇': 0,
     '一': 1,
     '二': 2,
@@ -24,7 +24,7 @@ CN_NUM = {
     '貮': 2,
     '两': 2,
 }
-CN_UNIT = {
+CARRY = {
     '十': 10,
     '拾': 10,
     '百': 100,
@@ -37,91 +37,74 @@ CN_UNIT = {
     '億': 100000000,
     '兆': 1000000000000,
 }
+TRANS = {
+    'w': 10000,
+    'y': 100000000,
+    'z': 1000000000000,
+    10000: 'w',
+    100000000: 'y',
+    1000000000000: 'z',
+}
 
 
-def cn2dig(cn):
-    lcn = list(cn)
+def num_input(list_cn):
     unit = 0  # 当前的单位
-    ldig = []  # 临时数组
-
-    while lcn:
-        cndig = lcn.pop()
-
-        if cndig in CN_UNIT:
-            unit = CN_UNIT.get(cndig)
-            if unit == 10000:
-                ldig.append('w')  # 标示万位
+    list_num = []  # 临时数组
+    while list_cn:
+        cn_item = list_cn.pop()
+        if cn_item in CARRY:
+            unit = CARRY.get(cn_item)
+            if unit in (10000, 100000000, 1000000000000):
+                list_num.append(TRANS.get(unit))
                 unit = 1
-            elif unit == 100000000:
-                ldig.append('y')  # 标示亿位
-                unit = 1
-            elif unit == 1000000000000:  # 标示兆位
-                ldig.append('z')
-                unit = 1
-
             continue
-
         else:
-            dig = CN_NUM.get(cndig)
-
+            dig = BASE.get(cn_item)
             if unit:
                 dig *= unit
                 unit = 0
-
-            ldig.append(dig)
-
-
+            list_num.append(dig)
     if unit == 10:  # 处理10-19的数字
-        ldig.append(10)
+        list_num.append(10)
+    return list_num
 
 
+def num_output(list_num):
     ret = 0
     tmp = 0
-    print(ldig)
-    while ldig:
-        x = ldig.pop()
-
-        if x == 'w':
-            tmp *= 10000
+    while list_num:
+        x = list_num.pop()
+        if x in ('w', 'y', 'z'):
+            tmp *= TRANS.get(x)
             ret += tmp
             tmp = 0
-
-        elif x == 'y':
-            tmp *= 100000000
-            ret += tmp
-            tmp = 0
-
-        elif x == 'z':
-            tmp *= 1000000000000
-            ret += tmp
-            tmp = 0
-
         else:
             tmp += x
-
     ret += tmp
     return ret
 
-    # ldig.reverse()
-    # print ldig
-    # print CN_NUM[u'七']
+
+def cn2num(cn):
+    list_cn = list(cn)
+    list_num = num_input(list_cn)
+    return num_output(list_num)
 
 
 if __name__ == '__main__':
-    print(cn2dig('一万一千一百零一'))
-    # test_dig = ['九',
-    #             '十一',
-    #             '一百二十三',
-    #             '一千二百零三',
-    #             '一万一千一百零一',
-    #             '十万零三千六百零九',
-    #             '一百二十三万四千五百六十七',
-    #             '一千一百二十三万四千五百六十七',
-    #             '一亿一千一百二十三万四千五百六十七',
-    #             '一百零二亿五千零一万零一千零三十八',
-    #             '一千一百一十一亿一千一百二十三万四千五百六十七',
-    #             '一兆一千一百一十一亿一千一百二十三万四千五百六十七',
-    #             ]
-    #
-    # for a in test_dig:
-    #     print(cn2dig(a))
+    # print(cn2num('一兆一千一百一十一亿一千一百二十三万四千五百六十七'))
+    test_dig = ['九',
+                '十一',
+                '一百二十三',
+                '一千二百零三',
+                '一万一千一百零一',
+                '十万零三千六百零九',
+                '一百二十三万四千五百六十七',
+                '一千一百二十三万四千五百六十七',
+                '一亿一千一百二十三万四千五百六十七',
+                '一百零二亿五千零一万零一千零三十八',
+                '一千一百一十一亿一千一百二十三万四千五百六十七',
+                '一兆一千一百一十一亿一千一百二十三万四千五百六十七',
+                ]
+
+    for a in test_dig:
+        print(cn2num(a))
