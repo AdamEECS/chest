@@ -74,6 +74,7 @@ def cn2dig(cn):
     if unit == 10:  # 处理10-19的数字
         ldig.append(10)
 
+
     ret = 0
     tmp = 0
     print(ldig)
