@@ -15,4 +15,4 @@ def _decode_pc_dat(datfile):
 
 
 if __name__ == '__main__':
-    _decode_pc_dat(datfile='xxxxx.dat')
+    _decode_pc_dat(datfile='XXXXS.dat')
