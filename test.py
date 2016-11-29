@@ -1,7 +1,7 @@
 towns = [
     {'name': 'Manchester', 'population': 58241},
     {'name': 'Coventry', 'population': 12435},
-    {'name': 'South Windsor', 'population': 25709}
+    {'name': 'South Windsor', 'population': 25709},
 ]
 
 print(list(zip(*[(t.get('name'), t.get('population')) for t in towns])))
