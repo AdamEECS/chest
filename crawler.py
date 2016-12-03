@@ -20,6 +20,6 @@ def main():
 
 
 if __name__ == '__main__':
-    configure_app()
+    # configure_app()
     # db_manager()
     main()
