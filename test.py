@@ -12,4 +12,5 @@ def get_value(key, lists):
 
 
 print(get_value('name', towns))
+
 print(get_value('population', towns))
