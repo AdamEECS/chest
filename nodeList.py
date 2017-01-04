@@ -30,8 +30,8 @@ class ListNode(object):
 
 
 class Solution(object):
-
-    def to_do(self, l1, l2):
+    @staticmethod
+    def to_do(l1, l2):
         """
         :param l1: ListNode
         :param l2: ListNode
@@ -81,13 +81,20 @@ def test():
     l6 = ListNode(9)
     l6.next = ListNode(9)
 
-    l = [(l1, l2), (l3, l4), (l5, l6)]
-    s = Solution()
+    l7 = ListNode(3)
+    l7.next = ListNode(4)
+    l7.next.next = ListNode(2)
+
+    l8 = ListNode(3)
+    l8.next = ListNode(6)
+    l8.next.next = ListNode(4)
+
+    l = [(l1, l2), (l3, l4), (l5, l6), (l7, l8)]
 
     for l1, l2 in l:
         print('l1:', l1)
         print('l2:', l2)
-        l3 = s.to_do(l1, l2)
+        l3 = Solution.to_do(l1, l2)
         print('l3:', l3)
         print('')
 
@@ -98,4 +105,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
