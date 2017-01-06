@@ -92,10 +92,10 @@ def test():
     l = [(l1, l2), (l3, l4), (l5, l6), (l7, l8)]
 
     for l1, l2 in l:
-        print('l1:', l1)
-        print('l2:', l2)
+        print('l1:    ', l1)
+        print('l2:    ', l2)
         l3 = Solution.to_do(l1, l2)
-        print('l3:', l3)
+        print('output:', l3)
         print('')
 
 
