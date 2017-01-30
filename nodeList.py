@@ -96,7 +96,7 @@ def test():
         print('l2:    ', l2)
         l3 = Solution.to_do(l1, l2)
         print('output:', l3)
-        print('')
+        print('       ')
 
 
 def main():
