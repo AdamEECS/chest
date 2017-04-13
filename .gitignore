@@ -24,7 +24,6 @@ var/
 .installed.cfg
 *.egg
 .idea/
-*.sqlite
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -89,3 +88,13 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+*.sqlite
+chat.sqlite.*
+.vagrant/
+
+# emoji
+static/emoji/
+
+# avatar
+static/user_avatar/*_*.png
