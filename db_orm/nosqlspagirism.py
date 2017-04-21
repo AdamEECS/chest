@@ -32,21 +32,33 @@ def next_id(name):
 
 
 class MongoModel(object):
-    __fields__ = [
-        '_id',
-        ('id', int, -1),
-        ('type', str, ''),
-        ('deleted', bool, False),
-        ('created_time', int, 0),
-        ('updated_time', int, 0),
-    ]
+    @classmethod
+    def _fields(cls):
+        fields = [
+            '_id',
+            ('id', int, -1),
+            ('type', str, ''),
+            ('deleted', bool, False),
+            ('ct', int, 0),
+            ('ut', int, 0),
+        ]
+        return fields
+
+    '''
+class User(MongoModel):
+    @classmethod
+    def _fields(cls):
+        fields = [
+            ('name', str, ''),
+            ('password', str, ''),
+        ]
+        fields.extend(super()._fields())
+        return fields
+    '''
 
     @classmethod
     def has(cls, **kwargs):
         return cls.find_one(**kwargs) is not None
-
-    def mongos(self, name):
-        return db[name].find()
 
     def __repr__(self):
         class_name = self.__class__.__name__
@@ -57,7 +69,7 @@ class MongoModel(object):
     def new(cls, form=None, **kwargs):
         name = cls.__name__
         m = cls()
-        fields = cls.__fields__.copy()
+        fields = cls._fields()
         fields.remove('_id')
         if form is None:
             form = {}
@@ -75,8 +87,8 @@ class MongoModel(object):
                 raise KeyError
         m.id = next_id(name)
         ts = int(time.time())
-        m.created_time = ts
-        m.updated_time = ts
+        m.ct = ts
+        m.ut = ts
         m.type = name.lower()
         m.save()
         return m
@@ -84,7 +96,7 @@ class MongoModel(object):
     @classmethod
     def _new_with_bson(cls, bson):
         m = cls()
-        fields = cls.__fields__.copy()
+        fields = cls._fields()
         fields.remove('_id')
         for f in fields:
             k, t, v = f
@@ -93,14 +105,12 @@ class MongoModel(object):
             else:
                 setattr(m, k, v)
         setattr(m, '_id', bson['_id'])
-        m.type = cls.__name__.lower()
         return m
 
     @classmethod
     def all(cls):
         return cls.find()
 
-    # TODO, 还应该有一个函数 find(name, **kwargs)
     @classmethod
     def find(cls, **kwargs):
         name = cls.__name__
@@ -114,21 +124,6 @@ class MongoModel(object):
         return l
 
     @classmethod
-    def find_raw(cls, **kwargs):
-        name = cls.__name__
-        ds = db[name].find(kwargs)
-        l = [d for d in ds]
-        return l
-
-    @classmethod
-    def _clean_field(cls, source, target):
-        ms = cls.find()
-        for m in ms:
-            v = getattr(m, source)
-            setattr(m, target, v)
-            m.save()
-
-    @classmethod
     def get(cls, id):
         can = isinstance(id, str) and id.isdigit()
         if can == True:
@@ -137,46 +132,16 @@ class MongoModel(object):
 
     @classmethod
     def find_one(cls, **kwargs):
-        # TODO 过滤掉被删除的元素
-        # kwargs['deleted'] = False
+        kwargs['deleted'] = kwargs.pop('deleted', False)
         l = cls.find(**kwargs)
         if len(l) > 0:
             return l[0]
         else:
             return None
 
-    @classmethod
-    def upsert(cls, query_form, update_form, hard=False):
-        ms = cls.find_one(**query_form)
-        if ms is None:
-            query_form.update(**update_form)
-            ms = cls.new(query_form)
-        else:
-            ms.update(update_form, hard=hard)
-        return ms
-
-    def update(self, form, hard=False):
-        for k, v in form.items():
-            if hard or hasattr(self, k):
-                setattr(self, k, v)
-        self.save()
-
     def save(self):
         name = self.__class__.__name__
         db[name].save(self.__dict__)
-
-    @classmethod
-    def logical_delete(cls, id):
-        name = cls.__name__
-        query = {
-            'id': id,
-        }
-        values = {
-            '$set': {
-                'deleted': True,
-            },
-        }
-        db[name].update_one(query, values)
 
     def delete(self):
         name = self.__class__.__name__
@@ -184,13 +149,9 @@ class MongoModel(object):
             'id': self.id,
         }
         values = {
-            '$set': {
-                'deleted': True,
-            },
+            'deleted': True
         }
         db[name].update_one(query, values)
-        # self.deleted = True
-        # self.save()
 
     def blacklist(self):
         b = [
