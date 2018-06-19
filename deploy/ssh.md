@@ -73,6 +73,11 @@ ufw enable
 ## 安装必备软件
 
 ```
+apt-get update
+
+```
+
+```
 apt-get install git python3 python3-pip python3-setuptools supervisor mongodb redis-server zsh
 
 ```
