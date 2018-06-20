@@ -103,3 +103,16 @@ nano /etc/environment
 LC_CTYPE="en_US.UTF-8"
 LC_ALL="en_US.UTF-8"
 ```
+
+## mongo 启动
+
+```
+mkdir /var/db
+mongod --dbpath /var/db
+```
+
+`MongoDB: locale::facet::_S_create_c_locale name not valid` 解决方法
+
+```
+export LC_ALL=C
+```
