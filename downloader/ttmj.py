@@ -25,7 +25,7 @@ def parse_html(filename, pixel='720', sub='', download='magnet'):
 
 
 def main():
-    parse_html('ttmj.html', pixel='720', sub='官方', download='magnet')
+    parse_html('ttmj.html', pixel='720', sub='天天', download='magnet')
 
 
 if __name__ == '__main__':
