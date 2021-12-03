@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  server:
+    image: drone/drone:0.8.6
+    ports:
+      - 7999:8000
+    volumes:
+      - ./data/drone:/var/lib/drone/
+    restart: always
+    environment:
+      - DRONE_OPEN=false
+      - DRONE_ADMIN=
+      - DRONE_HOST=http://ip
+      - DRONE_SECRET=same_as_server
+      - DRONE_GOGS=true
+      - DRONE_GOGS_URL=
+      - DRONE_GOGS_GIT_USERNAME=
+      - DRONE_GOGS_GIT_PASSWORD=
+      - DRONE_GOGS_PRIVATE_MODE=true
+      - DRONE_GOGS_SKIP_VERIFY=true
+  agent:
+    image: drone/agent:0.8.6
+    command: agent
+    restart: always
+    depends_on:
+      - server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DRONE_SECRET=same_as_server
+      - DRONE_SERVER=server:9000

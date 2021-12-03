@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+    gogs:
+      image: gogs/gogs:0.12.3
+      restart: always
+      volumes:
+        # 将 gogs 的数据文件存储在本机
+        - ".:/data"
+      ports:
+        - "0.0.0.0:9000:3000"
+        - "0.0.0.0:10022:22"
+      environment:
+        - "RUN_CROND=true"
