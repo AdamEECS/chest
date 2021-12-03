@@ -17,7 +17,8 @@
 
 2，启动 drone 后，进入 settings/secrets
 
-name: ssh_key
-value: 服务器的私钥（该私钥对应的公钥需写入服务器的 authorized_keys）
+- name: ssh_key
+
+- value: 服务器的私钥（该私钥对应的公钥需写入服务器的 authorized_keys）
 
 3，仓库中需要包含 .drone.yml 文件
